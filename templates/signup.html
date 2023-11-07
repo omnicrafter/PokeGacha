@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+{%extends "base.html"%}{%block title%}Sign Up!{%endblock%} {%block content%}
+{%for msg in get_flashed_messages()%} {{msg}} {%endfor%}
+<h2>Create an Account!</h2>
+<form method="POST" id="user_signup_form">
+  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+  'hidden' %} {% for error in field.errors %}
+  <span>{{ error }}</span>
+  {% endfor %} {{ field(placeholder=field.label.text) }} {% endfor %}
+
+  <button>Sign up!</button>
+</form>
+{%endblock%}

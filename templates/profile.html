@@ -1,0 +1,5 @@
+<!DOCTYPE html>
+{%extends "base.html"%}{%block title%}User Profile{%endblock%}{%block content%}
+<h2>User Profile for {{user.username}}</h2>
+<img src="{{user.image_url}}" />
+Email: {{user.email}} {%endblock%}
