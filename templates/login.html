@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-{%extends "base.html"%}{%block title%}Sign Up!{%endblock%} {%block content%}
-
-<h2>Create an Account!</h2>
-<form method="POST" id="user_signup_form">
+<!DOCTYPE html> {%extends "base.html"%}{%block title%}Log In{%endblock%}{%block
+content%}
+<h2>Please Sign In</h2>
+<form method="POST" id="user_login_form">
   {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
   'hidden' %} {% for error in field.errors %}
   <span>{{ error }}</span>
   {% endfor %} {{ field(placeholder=field.label.text) }} {% endfor %}
 
-  <button>Sign up!</button>
+  <button>Log in</button>
 </form>
+<a href="/signup">Create Account</a>
 {%endblock%}
