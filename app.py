@@ -1,24 +1,45 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, request, session, g, flash, abort
+from flask import Flask, render_template, redirect, request, session, g, flash, jsonify, abort
 from models import db, connect_db, User, Pokemon
+from functions import create_new_pokemon
 from forms import UserForm, UserLoginForm
+from pokeapi import get_random_pokemon, json_serialize
+from datetime import datetime
 
 
 CURRENT_USER_KEY = "current_user"
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', 'postgresql:///pokegacha'))
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
+def create_app(config_name='default'):
+    app = Flask(__name__)
 
-app.app_context().push()
-connect_db(app)
-# db.create_all()
+    if config_name == 'testing':
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///pokegacha-test'
+        app.config['TESTING'] = True
+        app.config['DEBUG'] = True
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = (
+            os.environ.get('DATABASE_URL', 'postgresql:///pokegacha'))
+
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        app.config['SQLALCHEMY_ECHO'] = False
+        app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+        app.config['SECRET_KEY'] = os.environ.get(
+            'SECRET_KEY', "it's a secret")
+
+    app.app_context().push()
+    connect_db(app)
+
+    # if config_name != 'testing':
+    #     db.create_all()
+    db.drop_all()
+    db.create_all()
+
+    return app
+
+
+app = create_app()
 
 
 @app.before_request
@@ -45,7 +66,7 @@ def do_logout():
 def homepage():
     """Homepage Route"""
 
-    return redirect('/signup')
+    return redirect('/login')
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -121,12 +142,59 @@ def handle_logout():
 
 @app.route('/users/<int:user_id>')
 def display_user_profile(user_id):
+    """displays user profile"""
     user = User.query.get_or_404(user_id)
 
     return render_template('profile.html', user=user)
 
 
-@app.route('/pokeroll')
+@app.route('/pokeroll', methods=["GET", "POST"])
 def handle_pokeroll():
+    """Display Pokemon Roll Page"""
     if not g.user:
         return redirect('login')
+
+    return render_template('pokeroll.html')
+
+
+@app.route('/gacha')
+def roll_random_pokemon():
+    """Get a random pokemon and data from the Poke Api"""
+
+    if not g.user:
+        return redirect('login')
+    try:
+        pokemon_data = get_random_pokemon()
+        if pokemon_data:
+
+            return jsonify(pokemon_data), 200
+        else:
+            return jsonify({'status': 'error', 'message': 'Failed to retrieve Pokemon data'}), 500
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': f'Failed to retrieve Pokemon data: {e}'}), 500
+
+
+@app.route('/catch', methods=["POST"])
+def catch_pokemon():
+    """Process User Catch Pokemon and save to database"""
+    if not g.user:
+        return redirect('login')
+    try:
+
+        pokemon = request.get_json()
+        new_pokemon = create_new_pokemon(pokemon, g.user)
+
+        db.session.add(new_pokemon)
+        db.session.commit()
+        print(f'{new_pokemon.name} added to database')
+
+        print(
+            f'{new_pokemon.name} added to {g.user.username}\'s pokemon collection')
+        # db.session.add(new_relationship)
+        # db.session.commit()
+
+        # print(f'{g.user.username} now owns {new_pokemon.name}!')
+
+        return jsonify({"message": "Pokemon caught successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

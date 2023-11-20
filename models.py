@@ -19,6 +19,8 @@ class User(db.Model):
     image_url = db.Column(db.Text, default='/static/images/default-pic.png')
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
+    user_pokemons = db.relationship('Pokemon',
+                                    backref='user')
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -68,17 +70,22 @@ class Pokemon(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False)
-    obtained_at = db.Column(db.DateTime, nullable=False,
+    obtained_at = db.Column(db.DateTime, nullable=True,
                             default=datetime.utcnow)
     species = db.Column(db.Text, nullable=False)
-    type = db.Column(db.Text, nullable=True, default="Unknown")
-    height = db.Column(db.Integer, nullable=True, default="Unknown")
-    weight = db.Column(db.Integer, nullable=True, default="Unknown")
+    type1 = db.Column(db.Text, nullable=True, default="Unknown")
+    type2 = db.Column(db.Text, nullable=True, default="Unknown")
+    type3 = db.Column(db.Text, nullable=True, default="Unknown")
+    height = db.Column(db.Integer, nullable=True, default=0)
+    weight = db.Column(db.Integer, nullable=True, default=0)
     image = db.Column(db.Text, nullable=True,
                       default="/static/images/default-pokemon.png")
+    image_shiny = db.Column(db.Text, nullable=True,
+                            default="/static/images/default-pokemon.png")
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def __repr__(self):
-        return f"<Pokemon #{self.id}: {self.name}, {self.species}, {self.type}>"
+        return f"<Pokemon #{self.id}: {self.name}, {self.species}, {self.type1}, {self.type2}>"
 
 
 def connect_db(app):
