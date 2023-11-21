@@ -56,6 +56,11 @@ const pokeDisplay = async (pokeObject) => {
   catchButton.textContent = "Catch";
   catchButton.id = "catchButton";
 
+  catchButton.addEventListener("click", function () {
+    console.log("Catch button clicked");
+    sendCatchRequest(pokeObject);
+  });
+
   pokeContainer.append(pokeSpeciesElement, pokeImageElement, pokeTypeElement);
   pokeContainer.append(pokeType2Element, pokeType3Element);
   pokeContainer.append(pokeHeightElement, pokeWeightElement);
@@ -82,6 +87,7 @@ const sendCatchRequest = async (pokemon) => {
 
     console.log(responseData.message);
     console.log("Catch request successful");
+    pokeContainer.innerHTML = "Successfully caught " + pokemon.species + "!";
   } catch (error) {
     console.error(error);
   }
@@ -92,9 +98,9 @@ rollButton.addEventListener("click", function (event) {
   pokeRoll();
 });
 
-document.addEventListener("click", function (event) {
-  event.preventDefault();
-  if (event.target.id === "catchButton") {
-    sendCatchRequest(currentPokemon);
-  }
-});
+// document.addEventListener("click", function (event) {
+//   event.preventDefault();
+//   if (event.target.id === "catchButton") {
+//     sendCatchRequest(currentPokemon);
+//   }
+// });

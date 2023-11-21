@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 {%extends "base.html"%}{%block title%}Sign Up!{%endblock%} {%block content%}
 
-<h2>Create an Account!</h2>
-<form method="POST" id="user_signup_form">
-  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
-  'hidden' %} {% for error in field.errors %}
-  <span>{{ error }}</span>
-  {% endfor %} {{ field(placeholder=field.label.text) }} {% endfor %}
+<div class="container mt-4 text-center">
+  <h2 class="">Create an Account!</h2>
+  <form
+    method="POST"
+    id="user_signup_form"
+    class="mx-auto"
+    style="max-width: 400px"
+  >
+    {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+    'hidden' %}
+    <div class="form-group mb-3">
+      {% for error in field.errors %}
+      <span class="text-danger">{{ error }}</span>
+      {% endfor %} {{ field(class="form-control",placeholder=field.label.text)
+      }}
+    </div>
+    {% endfor %}
 
-  <button>Sign up!</button>
-</form>
+    <button type="submit" class="btn btn-primary">Sign up!</button>
+  </form>
+</div>
 {%endblock%}

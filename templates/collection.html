@@ -1,0 +1,28 @@
+<!DOCTYPE html> {%extends "base.html"%}{%block
+title%}Collection{%endblock%}{%block content%}
+<div class="container">
+  <h1 class="text-center">{{user.username}}'s Collection</h1>
+  <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6">
+    {% for pokemon in pokemon %}
+    <div class="col mb-4">
+      <div class="card border-1 border-dark rounded d-flex flex-column h-100">
+        <img
+          src="{{pokemon.image}}"
+          class="card-img-top"
+          alt="Sprite image of {{pokemon.species}}"
+        />
+        <div class="card-body">
+          <h4 class="card-title">{{pokemon.name}}</h4>
+          <h5 class="card-text">Species: {{pokemon.species}}</h5>
+          <p class="card-text">Type: {{pokemon.type1}}</p>
+          <p class="card-text">Type 2: {{pokemon.type2}}</p>
+          <!-- <p class="card-text">Weight: {{pokemon.weight}} hectograms</p>
+          <p class="card-text">Height: {{pokemon.height}} decimeters</p> -->
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+{%endblock%}

@@ -33,8 +33,8 @@ def create_app(config_name='default'):
 
     # if config_name != 'testing':
     #     db.create_all()
-    db.drop_all()
-    db.create_all()
+    # db.drop_all()
+    # db.create_all()
 
     return app
 
@@ -90,6 +90,7 @@ def signup():
                 user = result
                 flash(
                     f"Welcome {user.username}! Your account has been successfully created.")
+                session[CURRENT_USER_KEY] = user.id
                 return redirect(f'/users/{user.id}')
             else:
                 flash(result)
@@ -122,7 +123,6 @@ def handle_login():
             return redirect('/login')
 
     if g.user:
-        flash('You are already signed in')
         return redirect(f'/users/{g.user.id}')
 
     return render_template('login.html', form=form)
@@ -198,3 +198,14 @@ def catch_pokemon():
         return jsonify({"message": "Pokemon caught successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/collection')
+def show_collection():
+    """Show User's Pokemon Collection"""
+    if not g.user:
+        return redirect('login')
+
+    pokemon_collection = User.query.get_or_404(g.user.id).user_pokemons
+
+    return render_template('collection.html', pokemon=pokemon_collection, user=g.user)
