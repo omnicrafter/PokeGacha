@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, request, session, g, flash, 
 from models import db, connect_db, User, Pokemon
 from functions import create_new_pokemon, count_unique_species
 from forms import UserForm, UserLoginForm
-from pokeapi import get_random_pokemon, json_serialize
+from pokeapi import get_random_pokemon
 from datetime import datetime
 
 
