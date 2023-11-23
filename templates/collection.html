@@ -5,7 +5,9 @@ title%}Collection{%endblock%}{%block content%}
   <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6">
     {% for pokemon in pokemon %}
     <div class="col mb-4">
-      <div class="card border-1 border-dark rounded d-flex flex-column h-100">
+      <div
+        class="card border-1 border-dark rounded d-flex flex-column h-100 p-3"
+      >
         <img
           src="{{pokemon.image}}"
           class="card-img-top"
@@ -13,12 +15,16 @@ title%}Collection{%endblock%}{%block content%}
         />
         <div class="card-body">
           <h4 class="card-title">{{pokemon.name}}</h4>
-          <h5 class="card-text">Species: {{pokemon.species}}</h5>
-          <p class="card-text">Type: {{pokemon.type1}}</p>
-          <p class="card-text">Type 2: {{pokemon.type2}}</p>
-          <!-- <p class="card-text">Weight: {{pokemon.weight}} hectograms</p>
-          <p class="card-text">Height: {{pokemon.height}} decimeters</p> -->
-          <a href="#" class="btn btn-primary">Go somewhere</a>
+          <p class="card-text">
+            <b>Type:</b> {%if pokemon.type2 == "Unknown"%} {{pokemon.type1 |
+            capitalize}} {%elif pokemon.type3 =="Unknown"%} {{pokemon.type1 |
+            capitalize}}, {{pokemon.type2 | capitalize}} {%else%}
+            {{pokemon.type1 | capitalize}}, {{pokemon.type2 | capitalize}},
+            {{pokemon.type3 | capitalize}} {%endif%}
+          </p>
+
+          <p class="card-text"><b>Weight:</b> {{pokemon.weight}} Hectograms</p>
+          <p class="card-text"><b>Height:</b> {{pokemon.height}} Decimeters</p>
         </div>
       </div>
     </div>

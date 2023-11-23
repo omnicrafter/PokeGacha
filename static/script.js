@@ -28,33 +28,46 @@ const pokeRoll = async () => {
 const pokeDisplay = async (pokeObject) => {
   console.log(pokeObject);
   pokeContainer.innerHTML = "";
+  pokeContainer.classList.add("card", "mt-4", "border", "border-dark", "p-4");
 
   const pokeSpeciesElement = document.createElement("h2");
-  pokeSpeciesElement.textContent = pokeObject.species;
+  pokeSpeciesElement.textContent = capitalizeFirst(pokeObject.species);
+  pokeSpeciesElement.classList.add("card-title", "text-center");
 
   const pokeImageElement = document.createElement("img");
   pokeImageElement.src = pokeObject.image;
 
   const pokeTypeElement = document.createElement("h3");
-  pokeTypeElement.textContent = "Type 1: " + pokeObject.type1;
-
-  const pokeType2Element = document.createElement("h3");
-  pokeType2Element.textContent = "Type 2: " + pokeObject.type2;
-
-  const pokeType3Element = document.createElement("h3");
-  pokeType3Element.textContent = "Type 3: " + pokeObject.type3;
+  if (pokeObject.type2 === "Unknown") {
+    pokeTypeElement.textContent = "Type: " + capitalizeFirst(pokeObject.type1);
+  } else if (pokeObject.type3 === "Unknown") {
+    pokeTypeElement.textContent =
+      "Type: " +
+      capitalizeFirst(pokeObject.type1) +
+      ", " +
+      capitalizeFirst(pokeObject.type2);
+  } else {
+    pokeTypeElement.textContent =
+      "Type: " +
+      capitalizeFirst(pokeObject.type1) +
+      ", " +
+      capitalizeFirst(pokeObject.type2) +
+      ", " +
+      capitalizeFirst(pokeObject.type3);
+  }
 
   const pokeHeightElement = document.createElement("h3");
   pokeHeightElement.textContent =
-    "Height: " + pokeObject.height + " decimeters";
+    "Height: " + pokeObject.height + " Decimeters";
 
   const pokeWeightElement = document.createElement("h3");
   pokeWeightElement.textContent =
-    "Weight: " + pokeObject.weight + " hectograms";
+    "Weight: " + pokeObject.weight + " Hectograms";
 
   catchButton = document.createElement("button");
   catchButton.textContent = "Catch";
   catchButton.id = "catchButton";
+  catchButton.classList.add("btn", "btn-success");
 
   catchButton.addEventListener("click", function () {
     console.log("Catch button clicked");
@@ -62,7 +75,6 @@ const pokeDisplay = async (pokeObject) => {
   });
 
   pokeContainer.append(pokeSpeciesElement, pokeImageElement, pokeTypeElement);
-  pokeContainer.append(pokeType2Element, pokeType3Element);
   pokeContainer.append(pokeHeightElement, pokeWeightElement);
   pokeContainer.append(catchButton);
 };
@@ -87,7 +99,8 @@ const sendCatchRequest = async (pokemon) => {
 
     console.log(responseData.message);
     console.log("Catch request successful");
-    pokeContainer.innerHTML = "Successfully caught " + pokemon.species + "!";
+    pokeContainer.innerHTML =
+      "Successfully caught " + capitalizeFirst(pokemon.species) + "!";
   } catch (error) {
     console.error(error);
   }
@@ -98,9 +111,8 @@ rollButton.addEventListener("click", function (event) {
   pokeRoll();
 });
 
-// document.addEventListener("click", function (event) {
-//   event.preventDefault();
-//   if (event.target.id === "catchButton") {
-//     sendCatchRequest(currentPokemon);
-//   }
-// });
+const capitalizeFirst = (word) => {
+  const capitalizedFirst = word.charAt(0).toUpperCase();
+  const restOfWord = word.slice(1).toLowerCase();
+  return capitalizedFirst + restOfWord;
+};

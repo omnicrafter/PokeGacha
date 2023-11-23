@@ -21,6 +21,7 @@ class User(db.Model):
                            default=datetime.utcnow)
     user_pokemons = db.relationship('Pokemon',
                                     backref='user')
+    total_rolls = db.Column(db.Integer, default=0)
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"

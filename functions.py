@@ -31,3 +31,10 @@ def create_new_pokemon(pokemon, user):
     )
 
     return new_pokemon
+
+
+def count_unique_species(user_pokemons):
+    """Count the number of unique species in the user's Pokemon collection."""
+    unique_species_count = len(
+        set(pokemon.species for pokemon in user_pokemons))
+    return unique_species_count

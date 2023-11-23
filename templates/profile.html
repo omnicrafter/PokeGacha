@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 {%extends "base.html"%}{%block title%}User Profile{%endblock%}{%block content%}
-<h2>User Profile for {{user.username}}</h2>
-<img src="{{user.image_url}}" class="rounded-circle" />
-Email: {{user.email}} {%endblock%}
+<div class="container mt-4 text-center">
+  <h2>{{user.username}}'s Profile</h2>
+  <img src="{{user.image_url}}" class="rounded-circle" />
+  <br />
+  <p><b>You have rolled a total of</b>: {{total_rolls}} times!</p>
+  <p><b>You have caught</b>: {{unique_species}} out of 1017 Unique Pokemon!</p>
+  <p><b>Email</b>: {{user.email}}</p>
+</div>
+{%endblock%}

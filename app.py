@@ -2,7 +2,7 @@ import os
 import requests
 from flask import Flask, render_template, redirect, request, session, g, flash, jsonify, abort
 from models import db, connect_db, User, Pokemon
-from functions import create_new_pokemon
+from functions import create_new_pokemon, count_unique_species
 from forms import UserForm, UserLoginForm
 from pokeapi import get_random_pokemon, json_serialize
 from datetime import datetime
@@ -144,8 +144,10 @@ def handle_logout():
 def display_user_profile(user_id):
     """displays user profile"""
     user = User.query.get_or_404(user_id)
+    unique_species = count_unique_species(user.user_pokemons)
+    total_rolls = user.total_rolls
 
-    return render_template('profile.html', user=user)
+    return render_template('profile.html', user=user, unique_species=unique_species, total_rolls=total_rolls)
 
 
 @app.route('/pokeroll', methods=["GET", "POST"])
@@ -166,6 +168,10 @@ def roll_random_pokemon():
     try:
         pokemon_data = get_random_pokemon()
         if pokemon_data:
+            g.user.total_rolls += 1
+            db.session.commit()
+
+            print(f'{g.user.username} has rolled {g.user.total_rolls} times')
 
             return jsonify(pokemon_data), 200
         else:
@@ -190,10 +196,6 @@ def catch_pokemon():
 
         print(
             f'{new_pokemon.name} added to {g.user.username}\'s pokemon collection')
-        # db.session.add(new_relationship)
-        # db.session.commit()
-
-        # print(f'{g.user.username} now owns {new_pokemon.name}!')
 
         return jsonify({"message": "Pokemon caught successfully"}), 200
     except Exception as e:
