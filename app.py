@@ -6,6 +6,7 @@ from functions import create_new_pokemon, count_unique_species
 from forms import UserForm, UserLoginForm
 from pokeapi import get_random_pokemon
 from datetime import datetime
+from flask_cors import CORS
 
 
 CURRENT_USER_KEY = "current_user"
@@ -13,6 +14,8 @@ CURRENT_USER_KEY = "current_user"
 
 def create_app(config_name='default'):
     app = Flask(__name__)
+    CORS(app, resources={
+         r"/gacha": {"origins": "https://pokegacha.onrender.com"}})
 
     if config_name == 'testing':
         app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///pokegacha-test'
@@ -30,11 +33,6 @@ def create_app(config_name='default'):
 
     app.app_context().push()
     connect_db(app)
-
-    # if config_name != 'testing':
-    #     db.create_all()
-    # db.drop_all()
-    # db.create_all()
 
     return app
 
