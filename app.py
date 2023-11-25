@@ -15,7 +15,7 @@ CURRENT_USER_KEY = "current_user"
 def create_app(config_name='default'):
     app = Flask(__name__)
     CORS(app, resources={
-         r"/gacha": {"origins": "https://pokegacha.onrender.com"}})
+         r"/": {"origins": "https://pokegacha.onrender.com"}})
 
     if config_name == 'testing':
         app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///pokegacha-test'
