@@ -21,15 +21,23 @@ def create_app(config_name='default'):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///pokegacha-test'
         app.config['TESTING'] = True
         app.config['DEBUG'] = True
-    else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = (
-            os.environ.get('DATABASE_URL', 'postgresql:///pokegacha'))
 
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        app.config['SQLALCHEMY_ECHO'] = False
-        app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
-        app.config['SECRET_KEY'] = os.environ.get(
-            'SECRET_KEY', "it's a secret")
+    if os.environ.get('FLASK_ENV') == 'production':
+        CORS(app, resources={
+             r"/": {"origins": "https://pokegacha.onrender.com"}})
+        app.config['BASE_URL'] = "https://pokegacha.onrender.com"
+    else:
+        CORS(app, resources={r"/": {"origins": "*"}})
+        app.config['BASE_URL'] = "http://127.0.0.1:5000"
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = (
+        os.environ.get('DATABASE_URL', 'postgresql:///pokegacha'))
+
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = False
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+    app.config['SECRET_KEY'] = os.environ.get(
+        'SECRET_KEY', "it's a secret")
 
     app.app_context().push()
     connect_db(app)
