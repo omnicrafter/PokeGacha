@@ -1,5 +1,5 @@
 // Path: static/script.js
-const URL = "http://127.0.0.1:5000";
+const URL = BASE_URL;
 
 rollButton = document.getElementById("roll-button");
 pokeContainer = document.getElementById("poke-container");
