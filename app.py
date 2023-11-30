@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, request, session, g, flash, jsonify, abort
+from flask import Flask, render_template, redirect, request, session, g, flash, jsonify, current_app, abort
 from models import db, connect_db, User, Pokemon
 from functions import create_new_pokemon, count_unique_species
 from forms import UserForm, UserLoginForm
@@ -161,8 +161,10 @@ def handle_pokeroll():
     """Display Pokemon Roll Page"""
     if not g.user:
         return redirect('login')
+    base_url = current_app.config['BASE_URL']
+    print(base_url)
 
-    return render_template('pokeroll.html')
+    return render_template('pokeroll.html', base_url=base_url)
 
 
 @app.route('/gacha')
